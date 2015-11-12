@@ -78,11 +78,20 @@ public class Solver {
         // Generate the possible patterns.
         Integer[][] patternTemp = genSeg(elements, w + 1 - Solver.sum(s));
         // The first character of each generated pattern needs to be discarded.
+        List<Integer[]> patternList = new ArrayList<>();
+        for (Integer[] pattern : patternTemp) {
+            patternList.add(Arrays.copyOfRange(pattern, 1, pattern.length));
+        }
 
-
-        return list.toArray(elements);
+        return patternList.toArray(elements);
     }
 
+    /**
+     * Creates all patterns for a single segment.
+     * @param o Original definition of segment.
+     * @param sp Integer containing pattern's size.
+     * @return Array
+     */
     private static Integer[][] genSeg(Integer[][] o, int sp) {
         if (o == null || o.length == 0) {
             try {
@@ -123,6 +132,9 @@ public class Solver {
 
         for (Integer[] x : hr) {
             rows.add(genRow(w, x));
+        }
+        for (Integer[] x : vr) {
+            cols.add(genRow(h, x));
         }
         return;
     }
