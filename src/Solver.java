@@ -20,6 +20,7 @@ import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -71,8 +72,47 @@ public class Solver {
         for (int len : s) {
             list.add(Solver.makeArray(len, 1));
         }
-        Integer[][] retVal = (Integer[][]) Array.newInstance(Integer[].class, list.size());
-        return list.toArray(retVal);
+        Integer[][] elements = (Integer[][]) Array.newInstance(Integer[].class, list.size());
+        elements = list.toArray(elements);
+
+        // Generate the possible patterns.
+        Integer[][] patternTemp = genSeg(elements, w + 1 - Solver.sum(s));
+        // The first character of each generated pattern needs to be discarded.
+
+
+        return list.toArray(elements);
+    }
+
+    private static Integer[][] genSeg(Integer[][] o, int sp) {
+        if (o == null || o.length == 0) {
+            try {
+                Integer[][] retVal = (Integer[][]) Array.newInstance(Integer[].class, sp + 1);
+                //if (sp > 0) {
+                    retVal[0] = makeArray(sp, 2);
+                //}
+                return retVal;
+            } catch (Exception e) {
+                System.out.println(sp);
+                return null;
+            }
+        } else {
+            List<List<Integer>> retVal = new ArrayList<>();
+            for (int x = 1; x < sp - o.length + 2; x++) {
+                //noinspection ConstantConditions
+                for (Integer[] tail : genSeg(Arrays.copyOfRange(o, 1, o.length), sp - x)) {
+                    List<Integer> result = new ArrayList<>();
+                    result.addAll(Arrays.asList(makeArray(x, 2)));
+                    result.addAll(Arrays.asList(o[0]));
+                    if (tail != null) {
+                        result.addAll(Arrays.asList(tail));
+                        retVal.add(result);
+                    }
+
+                }
+            }
+
+            return Nonogram.nestedListToArray(retVal, Integer.class);
+        }
     }
 
     private static void deduce(Integer[][] hr, Integer[][] vr) {
@@ -102,7 +142,7 @@ public class Solver {
 
     public static void main(String[] args) throws Exception {
         // Read problems from file.
-        String fn = "assets/nonogram-simple.txt";
+        String fn = "assets/nonogram-simple2.txt";
         String fc = new String(Files.readAllBytes(Paths.get(fn)));
         for (String p : fc.split("\n\n")) {
             solve(p);

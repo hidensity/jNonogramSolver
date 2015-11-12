@@ -41,13 +41,13 @@ public class Nonogram {
     private Integer[][][] nonoArray = null;
 
     /**
-     * Gets an array of a single Nonogram's dimension.
-     * @param list List containing Nonogram's dimension.
+     * Converts a nested List into a two dimensional array.
+     * @param list Nested List.
      * @param type Type of list elements.
-     * @param <T> Return type
+     * @param <T> Return type.
      * @return Array
      */
-    private static <T> T[][] nonoDimensionToArray(List<List<T>> list, Class type) {
+    public static <T> T[][] nestedListToArray(List<List<T>> list, Class type) {
         if (list == null) {
             return null;
         }
@@ -93,8 +93,8 @@ public class Nonogram {
 
             List<Integer[][]> temp = new ArrayList<>();
 
-            temp.add(Nonogram.nonoDimensionToArray(this.getList(0), Integer.class));
-            temp.add(Nonogram.nonoDimensionToArray(this.getList(1), Integer.class));
+            temp.add(Nonogram.nestedListToArray(this.getList(0), Integer.class));
+            temp.add(Nonogram.nestedListToArray(this.getList(1), Integer.class));
 
             Integer[][][] output = (Integer[][][]) Array.newInstance(temp.get(0).getClass(), 2);
 
@@ -110,7 +110,7 @@ public class Nonogram {
      * @return Array
      */
     public Integer[][] get(int dimension) {
-        return Nonogram.nonoDimensionToArray(this.getList(dimension), Integer.class);
+        return Nonogram.nestedListToArray(this.getList(dimension), Integer.class);
     }
 
     /**
